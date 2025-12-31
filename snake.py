@@ -10,10 +10,13 @@ BOARD = 16
 SQUARE = 40
 FPS = 30
 
-#         R    G    B
-DARK  = (162, 209, 73)
-LIGHT = (170, 215, 81)
-RED   = (231, 71, 29)
+#             R    G    B
+DARK      = (162, 209, 73)
+LIGHT     = (170, 215, 81)
+RED       = (231, 71, 29)
+DARKBLUE  = (40, 70, 140)
+LIGHTBLUE = (80, 120, 200)
+
 
 
 def main():
@@ -24,6 +27,7 @@ def main():
     
     drawBoard()
     placeFruit()
+    drawSnake()
     
     while True:
         for event in pygame.event.get():
@@ -36,8 +40,28 @@ def main():
 def placeFruit():
     fruitx = random.randrange(0, WINDOW, SQUARE)
     fruity = random.randrange(0, WINDOW, SQUARE)
+    color = DISPLAYSURF.get_at((fruitx, fruity))
+    
+    if color == DARKBLUE:
+        return placeFruit()
+    else:
+        pygame.draw.ellipse(DISPLAYSURF, RED, (fruitx, fruity, SQUARE, SQUARE))
 
-    pygame.draw.ellipse(DISPLAYSURF, RED, (fruitx, fruity, SQUARE, SQUARE))
+def getSquareX():
+    posX = 6
+   
+    squareX = SQUARE * posX
+    
+    return squareX
+
+def getSquareY():
+    posY = 7
+    squareY = SQUARE * posY
+
+    return squareY
+
+def drawSnake():
+    pygame.draw.rect(DISPLAYSURF, DARKBLUE, (getSquareX() ,getSquareY(), SQUARE * 4, SQUARE))
 
 def drawBoard():
     presentColor = DARK
