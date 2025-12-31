@@ -33,7 +33,8 @@ def main():
     drawFruit(fruitPos[0], fruitPos[1])
     drawBoard()
     drawSnake(snake)
-
+    
+    sound = pygame.mixer.Sound('bip.wav')
     pygame.mixer.music.load('music.wav')
     pygame.mixer.music.play(-1, 0.0)
     pygame.mixer.music.set_volume(0.3)
@@ -44,26 +45,41 @@ def main():
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_UP:
-                    DIRECTION = "UP"
+                    if DIRECTION == "DOWN":
+                        continue
+                    else:
+                        DIRECTION = "UP"
                 elif event.key == K_LEFT:
-                    DIRECTION = "LEFT"
+                    if DIRECTION == "RIGHT":
+                        continue
+                    else:
+                        DIRECTION = "LEFT"
                 elif event.key == K_DOWN:
-                    DIRECTION = "DOWN"
+                    if DIRECTION == "UP":
+                        continue
+                    else:
+                        DIRECTION = "DOWN"
                 elif event.key == K_RIGHT:
-                    DIRECTION = "RIGHT"
-                elif event.key == K_RETURN:
+                    if DIRECTION == "LEFT":
+                        continue
+                    else:
+                        DIRECTION = "RIGHT"
+                if event.key == K_RETURN:
                     gameStarted = True
 
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                pygame.quit()
-                sys.exit()
+                exit()
 
         if gameStarted:
             setNewHead(snake)          # ajouter la tête
             if hasColided(snake, fruitPos):  # collision avec fruit
-                fruitPos = placeFruit()      # générer un nouveau fruit
+                fruitPos = placeFruit()
+                sound.play().set_volume(0.2)# générer un nouveau fruit
             elif snake:                     # si snake non vide, supprimer la queue
                 snake.pop()
+
+        if snake[0][0] < 0 or snake[0][1] < 0 or snake[0][0] > BOARD or snake[0][1] > BOARD:
+            break
 
         drawBoard()
         drawFruit(fruitPos[0], fruitPos[1])
@@ -71,6 +87,10 @@ def main():
 
         pygame.display.update()
         fpsClock.tick(FPS)
+
+def exit():
+    pygame.quit()
+    sys.exit()
 
 def placeFruit():
     fruitx = random.randrange(0, BOARD)
