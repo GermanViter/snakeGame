@@ -29,10 +29,14 @@ def main():
     y = 7
 
     snake = [(x - 3, y), (x - 2, y), (x - 1, y), (x, y)]
-
+    fruitPos = placeFruit()
+    drawFruit(fruitPos[0], fruitPos[1])
     drawBoard()
-    placeFruit()
     drawSnake(snake)
+
+    pygame.mixer.music.load('music.wav')
+    pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.set_volume(0.3)
 
     gameStarted = False
     while True:
@@ -47,39 +51,51 @@ def main():
                     DIRECTION = "DOWN"
                 elif event.key == K_RIGHT:
                     DIRECTION = "RIGHT"
-                elif event.key == K_SPACE:
+                elif event.key == K_RETURN:
                     gameStarted = True
-                    print("ENTER PRESSÉ")
 
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
 
         if gameStarted:
-            setNewHead(snake)
-            snake.pop()
-        
+            setNewHead(snake)          # ajouter la tête
+            if hasColided(snake, fruitPos):  # collision avec fruit
+                fruitPos = placeFruit()      # générer un nouveau fruit
+            elif snake:                     # si snake non vide, supprimer la queue
+                snake.pop()
 
         drawBoard()
+        drawFruit(fruitPos[0], fruitPos[1])
         drawSnake(snake)
 
         pygame.display.update()
         fpsClock.tick(FPS)
 
 def placeFruit():
-    fruitx = random.randrange(0, WINDOW, SQUARE)
-    fruity = random.randrange(0, WINDOW, SQUARE)
-    color = DISPLAYSURF.get_at((fruitx, fruity))
+    fruitx = random.randrange(0, BOARD)
+    fruity = random.randrange(0, BOARD)
+    color = DISPLAYSURF.get_at((fruitx * SQUARE, fruity * SQUARE))
     
     if color == DARKBLUE:
         return placeFruit()
     else:
-        pygame.draw.ellipse(DISPLAYSURF, RED, (fruitx, fruity, SQUARE, SQUARE))
+        return (fruitx, fruity)
 
+def drawFruit(fruitx, fruity):
+    pygame.draw.ellipse(DISPLAYSURF, RED, (fruitx * SQUARE, fruity * SQUARE, SQUARE, SQUARE))
+
+def hasColided(snake, fruitPos):
+    if not snake:
+        return False
+    return snake[0] == fruitPos
 
 def drawSnake(snake):    
     for (i, j) in snake:
-        pygame.draw.rect(DISPLAYSURF, DARKBLUE, (i * SQUARE, j * SQUARE, SQUARE, SQUARE))
+        if (i, j) == snake[0]:
+            pygame.draw.rect(DISPLAYSURF, LIGHTBLUE, (i * SQUARE, j * SQUARE, SQUARE, SQUARE))
+        else:
+            pygame.draw.rect(DISPLAYSURF, DARKBLUE, (i * SQUARE, j * SQUARE, SQUARE, SQUARE))
 
 
 def setNewHead(snake):
