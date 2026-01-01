@@ -30,7 +30,7 @@ def main():
     nameFont = pygame.font.Font('Pixel Game.otf', 200)
     DISPLAYSURF = pygame.display.set_mode((WINDOW, WINDOW))
     pygame.display.set_caption('snake')
-    x = 10
+    x = 13
     y = 7
 
     snake = [(x - 3, y), (x - 2, y), (x - 1, y), (x, y)]
@@ -46,31 +46,36 @@ def main():
     eatSound.set_volume(0.3)
     deathSound = pygame.mixer.Sound('mixkit-retro-arcade-game-over-470.wav')
     deathSound.set_volume(0.3)
-    
+    pygame.mixer.music.load('flat-8-bit-gaming-music-instrumental-211547.mp3')
+    pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.set_volume(0.3)
+
     gameStarted = False
+    died = False
+    deadThisTurn = False
     while True:
-        pygame.mixer.music.load('flat-8-bit-gaming-music-instrumental-211547.mp3')
-        pygame.mixer.music.play(-1, 0.0)
-        pygame.mixer.music.set_volume(0.3)
+        if died:
+            pygame.mixer.music.play(-1, 0.0)
+            died = False
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_UP:
+                if event.key == K_UP and gameStarted:
                     if DIRECTION == "DOWN":
                         continue
                     else:
                         DIRECTION = "UP"
-                elif event.key == K_LEFT:
+                elif event.key == K_LEFT and gameStarted:
                     if DIRECTION == "RIGHT":
                         continue
                     else:
                         DIRECTION = "LEFT"
-                elif event.key == K_DOWN:
+                elif event.key == K_DOWN and gameStarted:
                     if DIRECTION == "UP":
                         continue
                     else:
                         DIRECTION = "DOWN"
-                elif event.key == K_RIGHT:
+                elif event.key == K_RIGHT and gameStarted:
                     if DIRECTION == "LEFT":
                         continue
                     else:
@@ -85,9 +90,11 @@ def main():
             drawBoard()
             DISPLAYSURF.blit(startText, startText_rect)
             DISPLAYSURF.blit(nameText, nameText_rect)
-
+            pygame.display.update()
+            continue
         else:
             setNewHead(snake)
+            #print(snake)
             if hasColided(snake, fruitPos):
                 fruitPos = placeFruit()
                 eatSound.play()
@@ -97,7 +104,10 @@ def main():
             for i in snake[1:]:
                 if i == snake[0]:
                     gameOver(snake, x, y, deathSound)
-                    continue
+                    died = True
+                    deadThisTurn = True
+                    break
+
 
             if (snake[0][0] < 0 or
                 snake[0][1] < 0 or
@@ -106,8 +116,18 @@ def main():
             ):
 
                 gameOver(snake, x, y, deathSound)
+                died = True
+                deadThisTurn = True
                 continue
                 
+            if deadThisTurn:
+                deadThisTurn = False
+                gameStarted = False
+                drawBoard()
+                DISPLAYSURF.blit(startText, startText_rect)
+                DISPLAYSURF.blit(nameText, nameText_rect)
+                pygame.display.update()
+                continue
 
             drawBoard()
             drawFruit(fruitPos[0], fruitPos[1])
