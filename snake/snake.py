@@ -1,6 +1,7 @@
 #!/opt/homebrew/bin/python3
 
 import random
+import time
 import pygame, sys
 from pygame.locals import *
 
@@ -13,12 +14,13 @@ fpsClock = pygame.time.Clock()
 
 
 #             R    G    B
-DARK      = (162, 209, 73)
-LIGHT     = (170, 215, 81)
-RED       = (231, 71,  29)
+DARK      = (162, 209, 73 )
+LIGHT     = (170, 215, 81 )
+RED       = (231, 71,  29 )
 DARKBLUE  = (40,  70,  140)
 LIGHTBLUE = (80,  120, 200)
-BLACK     = (0,   0,   0)
+BLACK     = (0,   0,   0  )
+WHITE     = (255, 255, 255)
 DIRECTION = "LEFT"
 
 def main():
@@ -42,13 +44,15 @@ def main():
 
     eatSound = pygame.mixer.Sound('little_robot_sound_factory_Collect_Point_01.mp3')
     eatSound.set_volume(0.3)
-    pygame.mixer.music.load('flat-8-bit-gaming-music-instrumental-211547.mp3')
-    pygame.mixer.music.play(-1, 0.0)
-    pygame.mixer.music.set_volume(0.3)
-
+    deathSound = pygame.mixer.Sound('mixkit-retro-arcade-game-over-470.wav')
+    deathSound.set_volume(0.3)
+    
     gameStarted = False
     while True:
-        
+        pygame.mixer.music.load('flat-8-bit-gaming-music-instrumental-211547.mp3')
+        pygame.mixer.music.play(-1, 0.0)
+        pygame.mixer.music.set_volume(0.3)
+
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_UP:
@@ -92,14 +96,18 @@ def main():
             
             for i in snake[1:]:
                 if i == snake[0]:
-                    quitSnake()
-                    
+                    gameOver(snake, x, y, deathSound)
+                    continue
+
             if (snake[0][0] < 0 or
                 snake[0][1] < 0 or
                 snake[0][0] >= BOARD or
                 snake[0][1] >= BOARD
             ):
-                quitSnake()
+
+                gameOver(snake, x, y, deathSound)
+                continue
+                
 
             drawBoard()
             drawFruit(fruitPos[0], fruitPos[1])
@@ -111,6 +119,31 @@ def main():
 def quitSnake():
     pygame.quit()
     sys.exit()
+
+def gameOver(snake, x, y, sound):
+    global DIRECTION, gameStarted
+    pygame.mixer.music.stop()
+    sound.play()
+    playDeathAnimation()
+    #snake = [(x - 3, y), (x - 2, y), (x - 1, y), (x, y)]
+    snake.clear()
+    snake.extend([(x - 3, y), (x - 2, y), (x - 1, y), (x, y)])
+    DIRECTION = "LEFT"
+    gameStarted = False
+
+def playDeathAnimation():
+        remainingSquares = BOARD * BOARD
+        
+        while remainingSquares != 0:
+            x = random.randrange(0, BOARD)
+            y = random.randrange(0, BOARD)
+            color = DISPLAYSURF.get_at((x * SQUARE, y * SQUARE))
+
+            if color != WHITE:
+                pygame.draw.rect(DISPLAYSURF, WHITE, (x * SQUARE, y * SQUARE, SQUARE, SQUARE))
+                pygame.display.update()
+                pygame.time.wait(5)
+                remainingSquares -= 1
 
 def placeFruit():
     fruitx = random.randrange(0, BOARD)
