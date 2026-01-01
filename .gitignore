@@ -9,6 +9,7 @@ slidepuzzle.py
 drawing.py
 cat.png
 bip.wav
-
-
+.gitignore
+.DS_Store
+snake/.DS_Store
 
