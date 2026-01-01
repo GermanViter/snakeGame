@@ -18,14 +18,14 @@ RED       = (231, 71, 29)
 DARKBLUE  = (40, 70, 140)
 LIGHTBLUE = (80, 120, 200)
 
-DIRECTION = "RIGHT"
+DIRECTION = "LEFT"
 
 def main():
     global DISPLAYSURF, DIRECTION
     pygame.init()
     DISPLAYSURF = pygame.display.set_mode((WINDOW, WINDOW))
     pygame.display.set_caption('snake')
-    x = 6
+    x = 10
     y = 7
 
     snake = [(x - 3, y), (x - 2, y), (x - 1, y), (x, y)]
@@ -71,13 +71,17 @@ def main():
                 exit()
 
         if gameStarted:
-            setNewHead(snake)          # ajouter la tête
-            if hasColided(snake, fruitPos):  # collision avec fruit
+            setNewHead(snake)
+            if hasColided(snake, fruitPos):
                 fruitPos = placeFruit()
-                sound.play().set_volume(0.2)# générer un nouveau fruit
-            elif snake:                     # si snake non vide, supprimer la queue
+                sound.play().set_volume(0.2)
+            elif snake:
                 snake.pop()
-
+        
+        for i in snake[1:]:
+            if i == snake[0]:
+                exit()
+                    
         if snake[0][0] < 0 or snake[0][1] < 0 or snake[0][0] > BOARD or snake[0][1] > BOARD:
             break
 
