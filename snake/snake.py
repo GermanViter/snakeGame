@@ -32,8 +32,8 @@ def main():
     pygame.init()
 
     # Font setup
-    startFont = pygame.font.Font('PressStart2P-Regular.ttf', 30)
-    nameFont = pygame.font.Font('Pixel Game.otf', 200)
+    startFont = pygame.font.Font('assets/PressStart2P-Regular.ttf', 30)
+    nameFont = pygame.font.Font('assets/Pixel Game.otf', 200)
 
     # Initialize the display surface
     DISPLAYSURF = pygame.display.set_mode((WINDOW, WINDOW))
@@ -66,16 +66,16 @@ def main():
     highScore = loadData()
 
     # Load sound effects and background music
-    eatSound = pygame.mixer.Sound('little_robot_sound_factory_Collect_Point_01.mp3')
+    eatSound = pygame.mixer.Sound('assets/little_robot_sound_factory_Collect_Point_01.mp3')
     eatSound.set_volume(0.3)
-    deathSound = pygame.mixer.Sound('mixkit-retro-arcade-game-over-470.wav')
+    deathSound = pygame.mixer.Sound('assets/mixkit-retro-arcade-game-over-470.wav')
     deathSound.set_volume(0.3)
-    pygame.mixer.music.load('flat-8-bit-gaming-music-instrumental-211547.mp3')
+    pygame.mixer.music.load('assets/flat-8-bit-gaming-music-instrumental-211547.mp3')
     pygame.mixer.music.play(-1, 0.0)
     pygame.mixer.music.set_volume(0.3)
 
     # Load and scale the apple image
-    apple = pygame.image.load("apple.png")
+    apple = pygame.image.load("assets/apple.png")
     apple = pygame.transform.scale(apple, (SQUARE, SQUARE))
 
     # Game state variables
