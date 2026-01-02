@@ -82,6 +82,7 @@ def main():
     deadThisTurn = False
     blinkState = True
     blinkTimer = 0
+    canChangeDirection = True
 
     # Main game loop
     while True:
@@ -102,20 +103,21 @@ def main():
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 # Handle directional input
-                if event.key == K_UP and gameStarted:
+                if event.key == K_UP and canChangeDirection:
                     if DIRECTION != "DOWN":
                         DIRECTION = "UP"
-                elif event.key == K_LEFT and gameStarted:
+                elif event.key == K_LEFT and canChangeDirection:
                     if DIRECTION != "RIGHT":
                         DIRECTION = "LEFT"
-                elif event.key == K_DOWN and gameStarted:
+                elif event.key == K_DOWN and canChangeDirection:
                     if DIRECTION != "UP":
                         DIRECTION = "DOWN"
-                elif event.key == K_RIGHT and gameStarted:
+                elif event.key == K_RIGHT and canChangeDirection:
                     if DIRECTION != "LEFT":
                         DIRECTION = "RIGHT"
                 # Start the game on ENTER press
                 if event.key == K_RETURN:
+                    canChangeDirection = True
                     gameStarted = True
                     score = 0
 
@@ -125,6 +127,7 @@ def main():
         
         # Display the start screen if the game hasn't started
         if not gameStarted:
+            canChangeDirection = False
             drawBoard()
 
             # Create floating effect for the title
@@ -151,6 +154,7 @@ def main():
             continue
         else:
             # Game logic when the game is running
+            canChangeDirection = True
             setNewHead(snake)
 
             # Check for collision with the fruit
@@ -168,6 +172,7 @@ def main():
             for i in snake[1:]:
                 if i == snake[0]:
                     gameOver(snake, x, y, deathSound)
+                    canChangeDirection = False
                     died = True
                     deadThisTurn = True
                     break
@@ -179,6 +184,7 @@ def main():
                 snake[0][1] >= BOARD
             ):
                 gameOver(snake, x, y, deathSound)
+                canChangeDirection = False
                 died = True
                 deadThisTurn = True
                 continue
