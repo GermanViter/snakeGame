@@ -1,5 +1,7 @@
 #!/opt/homebrew/bin/python3
 
+import os
+import json
 import random
 import math
 import pygame, sys
@@ -26,7 +28,7 @@ DIRECTION = "LEFT"
 
 def main():
     """Main function for the game."""
-    global DISPLAYSURF, DIRECTION
+    global DISPLAYSURF, DIRECTION, highScore
     pygame.init()
 
     # Font setup
@@ -61,7 +63,7 @@ def main():
 
     # Score variables
     score = 0
-    highScore = 0
+    highScore = loadData()
 
     # Load sound effects and background music
     eatSound = pygame.mixer.Sound('little_robot_sound_factory_Collect_Point_01.mp3')
@@ -210,8 +212,11 @@ def main():
 
 def quitSnake():
     """Quits Pygame and exits the program."""
+    global highScore
+    saveData(highScore)
     pygame.quit()
     sys.exit()
+    
 
 def gameOver(snake, x, y, sound):
     """Handles the game over state."""
@@ -299,6 +304,28 @@ def drawBoard():
         # Alternate colors for the next row
         presentColor = LIGHT if presentColor == DARK else DARK
         y += SQUARE    
+
+def loadData():
+    default_data = {"high_score": 0}
+
+    if not os.path.exists("PlayerInfo.json"):
+        with open("PlayerInfo.json", "w") as f:
+            json.dump(default_data, f, indent=4)
+            return 0
+
+    try:
+        with open("PlayerInfo.json", "r") as f:
+            data = json.load(f)
+            return int(data.get("high_score", 0))
+
+    except json.JSONDecodeError:
+        with open("PlayerInfo.json", "w") as f:
+            json.dump(default_data, f, indent=4)
+            return 0
+
+def saveData(highScore):
+    with open("PlayerInfo.json", "w") as f:
+        json.dump({"high_score": highScore}, f, indent=4)
 
 if __name__ == '__main__':
     # Entry point of the program
