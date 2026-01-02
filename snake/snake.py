@@ -117,6 +117,7 @@ def main():
                 # Start the game on ENTER press
                 if event.key == K_RETURN:
                     gameStarted = True
+                    score = 0
 
             # Quit the game
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -169,7 +170,6 @@ def main():
                     gameOver(snake, x, y, deathSound)
                     died = True
                     deadThisTurn = True
-                    score = 0
                     break
 
             # Check for collision with the walls
@@ -181,7 +181,6 @@ def main():
                 gameOver(snake, x, y, deathSound)
                 died = True
                 deadThisTurn = True
-                score = 0
                 continue
                 
             # Handle the transition after death
