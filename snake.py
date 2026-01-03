@@ -14,21 +14,22 @@ SQUARE = 40   # Size of each square in pixels
 FPS = 10      # Frames per second
 fpsClock = pygame.time.Clock()
 
-#             R    G    B
-DARK      = (162, 209, 73 )
-LIGHT     = (170, 215, 81 )
-RED       = (231, 71 , 29 )
-DARKBLUE  = (40 , 70 , 140)
-LIGHTBLUE = (80 , 120, 200)
-BLACK     = (0  , 0  , 0  )
-WHITE     = (255, 255, 255)
+#             R    G    B    A
+DARK      = (162, 209, 73 , 255)
+LIGHT     = (170, 215, 81 , 255)
+RED       = (231, 71 , 29 , 255)
+DARKBLUE  = (40 , 70 , 140, 255)
+LIGHTBLUE = (80 , 120, 200, 255)
+BLACK     = (0  , 0  , 0  , 255)
+SHADOW    = (0  , 0  , 0  , 120)
+WHITE     = (255, 255, 255, 255)
 
 # Initial direction of the snake
 DIRECTION = "LEFT"
 
 def main():
     """Main function for the game."""
-    global DISPLAYSURF, DIRECTION, highScore
+    global DISPLAYSURF, DIRECTION, highScore, overlay
     pygame.init()
 
     # Font setup
@@ -38,6 +39,8 @@ def main():
     # Initialize the display surface
     DISPLAYSURF = pygame.display.set_mode((WINDOW, WINDOW))
     pygame.display.set_caption('snake')
+    overlay = pygame.Surface((WINDOW, WINDOW), pygame.SRCALPHA)
+    overlay.fill(SHADOW)
 
     # Initial position of the snake
     x = 13
@@ -61,6 +64,10 @@ def main():
     nameText = nameFont.render("SNAKE", True, DARKBLUE)
     nameText_rect = nameText.get_rect(center=(WINDOW // 2, WINDOW // 4))
 
+    # Pause text
+    pauseText = nameFont.render("PAUSED", True, WHITE)
+    pauseText_rect = pauseText.get_rect(center=(WINDOW // 2, WINDOW // 2))
+
     # Score variables
     score = 0
     highScore = loadData()
@@ -80,6 +87,7 @@ def main():
 
     # Game state variables
     gameStarted = False
+    gamePaused = False
     died = False
     deadThisTurn = False
     blinkState = True
@@ -122,6 +130,11 @@ def main():
                     canChangeDirection = True
                     gameStarted = True
                     score = 0
+                if event.key == K_SPACE:
+                    if gamePaused:
+                        gamePaused = False
+                    else:
+                        gamePaused = True
 
             # Quit the game
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -154,8 +167,19 @@ def main():
             DISPLAYSURF.blit(highScoreText, highScoreText_rect)
             pygame.display.update()
             continue
+        elif gamePaused:
+            drawBoard()
+            drawSnake(snake)
+            drawFruit(fruitPos[0], fruitPos[1], apple)
+            DISPLAYSURF.blit(overlay, (0, 0))
+            DISPLAYSURF.blit(pauseText, pauseText_rect)
+            pygame.mixer.music.pause()
+            pygame.display.update()
+            continue
+
         else:
             # Game logic when the game is running
+            pygame.mixer.music.unpause()
             canChangeDirection = True
             setNewHead(snake)
 
