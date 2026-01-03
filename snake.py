@@ -67,6 +67,10 @@ def main():
     # Pause text
     pauseText = nameFont.render("PAUSED", True, WHITE)
     pauseText_rect = pauseText.get_rect(center=(WINDOW // 2, WINDOW // 4))
+    exitText = startFont.render("[e]xit", True, WHITE)
+    exitText_rect = exitText.get_rect(center=(WINDOW // 2, pauseText_rect.center[1] + SQUARE * 3))
+    resumeText = startFont.render("[space]resume", True, WHITE)
+    resumeText_rect = resumeText.get_rect(center=(WINDOW // 2, exitText_rect.center[1] + SQUARE * 2))
 
     # Score variables
     score = 0
@@ -86,24 +90,24 @@ def main():
     apple = pygame.transform.scale(apple, (SQUARE, SQUARE))
 
     # head images
-    headUp = pygame.image.load("assets/head_up.png")
-    headDown = pygame.image.load("assets/head_down.png")
     headLeft = pygame.image.load("assets/head_left.png")
-    headRight = pygame.image.load("assets/head_right.png")
+    headUp = pygame.transform.rotate(headLeft, -90)
+    headDown = pygame.transform.rotate(headLeft, 90)
+    headRight = pygame.transform.flip(headLeft, True, False)
 
     # tail images
     tailUp = pygame.image.load("assets/tail_up.png")
-    tailDown = pygame.image.load("assets/tail_down.png")
-    tailLeft = pygame.image.load("assets/tail_left.png")
-    tailRight = pygame.image.load("assets/tail_right.png")
-
+    tailDown = pygame.transform.rotate(tailUp, 180)
+    tailLeft = pygame.transform.rotate(tailUp, 90)
+    tailRight = pygame.transform.rotate(tailUp, -90)
     # body images
     bodyUpRightCorner = pygame.image.load("assets/body_bottomleft.png")
-    bodyUpLeftCorner = pygame.image.load("assets/body_bottomright.png")
-    bodyBottomRightCorner = pygame.image.load("assets/body_topleft.png")
-    bodyBottomLeftCorner = pygame.image.load("assets/body_topright.png")
-    bodyHorizontal = pygame.image.load("assets/body_horizontal.png")
+    bodyUpLeftCorner = pygame.transform.rotate(bodyUpRightCorner, 90)
+    bodyBottomRightCorner = pygame.transform.rotate(bodyUpRightCorner, -90)    
+    bodyBottomLeftCorner = pygame.transform.rotate(bodyUpRightCorner, 180)
     bodyVertical = pygame.image.load("assets/body_vertical.png")
+    bodyHorizontal = pygame.transform.rotate(bodyVertical, 90)
+
 
 
     # Game state variables
@@ -156,6 +160,10 @@ def main():
                         gamePaused = False
                     else:
                         gamePaused = True
+                if event.key == K_e and gamePaused:
+                    gamePaused = False
+                    gameStarted = False
+                    pygame.mixer.music.play()
 
             # Quit the game
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -194,6 +202,8 @@ def main():
             drawFruit(fruitPos[0], fruitPos[1], apple)
             DISPLAYSURF.blit(overlay, (0, 0))
             DISPLAYSURF.blit(pauseText, pauseText_rect)
+            DISPLAYSURF.blit(exitText, exitText_rect)
+            DISPLAYSURF.blit(resumeText, resumeText_rect)
             pygame.mixer.music.pause()
             pygame.display.update()
             continue
