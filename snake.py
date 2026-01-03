@@ -189,6 +189,7 @@ def main():
             pygame.display.update()
             continue
         elif gamePaused:
+            canChangeDirection = False
             drawBoard()
             drawSnake(snake)
             drawFruit(fruitPos[0], fruitPos[1], apple)
