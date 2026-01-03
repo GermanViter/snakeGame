@@ -29,7 +29,7 @@ DIRECTION = "LEFT"
 
 def main():
     """Main function for the game."""
-    global DISPLAYSURF, DIRECTION, highScore, overlay
+    global DISPLAYSURF, DIRECTION, highScore, overlay, headUp, headDown, headLeft, headRight, bodyBottomLeftCorner, bodyBottomRightCorner, bodyHorizontal, bodyVertical, bodyUpRightCorner, bodyUpLeftCorner, tailDown, tailUp, tailLeft, tailRight
     pygame.init()
 
     # Font setup
@@ -66,7 +66,7 @@ def main():
 
     # Pause text
     pauseText = nameFont.render("PAUSED", True, WHITE)
-    pauseText_rect = pauseText.get_rect(center=(WINDOW // 2, WINDOW // 2))
+    pauseText_rect = pauseText.get_rect(center=(WINDOW // 2, WINDOW // 4))
 
     # Score variables
     score = 0
@@ -84,6 +84,27 @@ def main():
     # Load and scale the apple image
     apple = pygame.image.load("assets/apple.png")
     apple = pygame.transform.scale(apple, (SQUARE, SQUARE))
+
+    # head images
+    headUp = pygame.image.load("assets/head_up.png")
+    headDown = pygame.image.load("assets/head_down.png")
+    headLeft = pygame.image.load("assets/head_left.png")
+    headRight = pygame.image.load("assets/head_right.png")
+
+    # tail images
+    tailUp = pygame.image.load("assets/tail_up.png")
+    tailDown = pygame.image.load("assets/tail_down.png")
+    tailLeft = pygame.image.load("assets/tail_left.png")
+    tailRight = pygame.image.load("assets/tail_right.png")
+
+    # body images
+    bodyUpRightCorner = pygame.image.load("assets/body_bottomleft.png")
+    bodyUpLeftCorner = pygame.image.load("assets/body_bottomright.png")
+    bodyBottomRightCorner = pygame.image.load("assets/body_topleft.png")
+    bodyBottomLeftCorner = pygame.image.load("assets/body_topright.png")
+    bodyHorizontal = pygame.image.load("assets/body_horizontal.png")
+    bodyVertical = pygame.image.load("assets/body_vertical.png")
+
 
     # Game state variables
     gameStarted = False
@@ -293,8 +314,14 @@ def drawSnake(snake):
     """Draws the snake on the board."""
     for (i, j) in snake:
         if (i, j) == snake[0]:
-            # Draw the head with a different color
-            pygame.draw.rect(DISPLAYSURF, LIGHTBLUE, (i * SQUARE, j * SQUARE, SQUARE, SQUARE))
+            if DIRECTION == "UP":
+                DISPLAYSURF.blit(headUp, (i * SQUARE, j * SQUARE))
+            elif DIRECTION == "DOWN":
+                DISPLAYSURF.blit(headDown, (i * SQUARE, j * SQUARE))
+            elif DIRECTION == "LEFT":
+                DISPLAYSURF.blit(headLeft, (i * SQUARE, j * SQUARE))
+            elif DIRECTION == "RIGHT":
+                DISPLAYSURF.blit(headRight, (i * SQUARE, j * SQUARE))
         else:
             # Draw the body
             pygame.draw.rect(DISPLAYSURF, DARKBLUE, (i * SQUARE, j * SQUARE, SQUARE, SQUARE))
