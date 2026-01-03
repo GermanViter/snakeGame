@@ -54,7 +54,7 @@ def main():
     # Initial snake body
     snake = [(x - 3, y), (x - 2, y), (x - 1, y), (x, y)]
     # Place the first fruit
-    fruitPos = placeFruit()
+    fruitPos = placeFruit(snake)
 
     # Text for the start screen
     startText = startFont.render("PRESS ENTER TO START", True, BLACK)
@@ -209,7 +209,7 @@ def main():
                 score += 1
                 if score > highScore:
                     highScore += 1
-                fruitPos = placeFruit()
+                fruitPos = placeFruit(snake)
                 eatSound.play()
             else:
                 # Remove the last segment of the snake if no fruit is eaten
@@ -289,14 +289,14 @@ def playDeathAnimation():
             pygame.time.wait(5)
             remainingSquares -= 1
 
-def placeFruit():
+def placeFruit(snake):
     """Places a fruit on a random square that is not occupied by the snake."""
     fruitx = random.randrange(0, BOARD)
     fruity = random.randrange(0, BOARD)
-    color = DISPLAYSURF.get_at((fruitx * SQUARE, fruity * SQUARE))
+
     # Ensure the fruit doesn't spawn on the snake
-    if color == DARKBLUE or color == LIGHTBLUE:
-        return placeFruit()
+    if (fruitx, fruity) in snake:
+        return placeFruit(snake)
     else:
         return (fruitx, fruity)
 
@@ -312,19 +312,67 @@ def hasColided(snake, fruitPos):
 
 def drawSnake(snake):    
     """Draws the snake on the board."""
-    for (i, j) in snake:
-        if (i, j) == snake[0]:
-            if DIRECTION == "UP":
-                DISPLAYSURF.blit(headUp, (i * SQUARE, j * SQUARE))
-            elif DIRECTION == "DOWN":
-                DISPLAYSURF.blit(headDown, (i * SQUARE, j * SQUARE))
-            elif DIRECTION == "LEFT":
-                DISPLAYSURF.blit(headLeft, (i * SQUARE, j * SQUARE))
-            elif DIRECTION == "RIGHT":
-                DISPLAYSURF.blit(headRight, (i * SQUARE, j * SQUARE))
+    for i in range(len(snake)):
+        segment = snake[i]
+        if i == 0:
+            drawHead(snake)
+        elif i == len(snake) - 1:
+            drawTail(segment, snake)
         else:
-            # Draw the body
-            pygame.draw.rect(DISPLAYSURF, DARKBLUE, (i * SQUARE, j * SQUARE, SQUARE, SQUARE))
+            prev = snake[i + 1]
+            next = snake[i - 1]
+
+            sprite = getBodySprite(prev, segment, next)
+            DISPLAYSURF.blit(sprite, (segment[0] * SQUARE, segment[1] * SQUARE))
+
+
+
+
+def getBodySprite(prev, segment, next):
+    dx_prev = segment[0] - prev[0]
+    dy_prev = segment[1] - prev[1]
+    dx_next = segment[0] - next[0]
+    dy_next = segment[1] - next[1]
+    
+    if dx_prev == dx_next:
+        return bodyVertical
+    elif dy_prev == dy_next:
+        return bodyHorizontal
+    else:
+        if dx_prev == 1 and dy_next == -1 or dx_next == 1 and dy_prev == -1:
+            return bodyUpRightCorner
+        elif dx_prev == -1 and dy_next == -1 or dx_next == -1 and dy_prev == -1:
+            return bodyUpLeftCorner
+        elif dx_prev == 1 and dy_next == 1 or dx_next == 1 and dy_prev == 1:
+            return bodyBottomRightCorner
+        elif dx_prev == -1 and dy_next == 1 or dx_next == -1 and dy_prev == 1:
+            return bodyBottomLeftCorner
+
+def drawHead(snake):
+    if DIRECTION == "UP":
+        DISPLAYSURF.blit(headUp, (snake[0][0] * SQUARE, snake[0][1] * SQUARE))
+    elif DIRECTION == "DOWN":
+        DISPLAYSURF.blit(headDown, (snake[0][0] * SQUARE, snake[0][1] * SQUARE))
+    elif DIRECTION == "RIGHT":
+        DISPLAYSURF.blit(headRight, (snake[0][0] * SQUARE, snake[0][1] * SQUARE))
+    else:
+        DISPLAYSURF.blit(headLeft, (snake[0][0] * SQUARE, snake[0][1] * SQUARE))
+
+def drawTail(segment, snake):
+    prev = snake[-2]
+
+    dx = segment[0] - prev[0]
+    dy = segment[1] - prev[1]
+
+    if dx == 1:
+        DISPLAYSURF.blit(tailRight, (segment[0] * SQUARE, segment[1] * SQUARE))
+    elif dx == -1:
+        DISPLAYSURF.blit(tailLeft, (segment[0] * SQUARE, segment[1] * SQUARE))
+    elif dy == 1:
+        DISPLAYSURF.blit(tailDown, (segment[0] * SQUARE, segment[1] * SQUARE))
+    elif dy == -1:
+        DISPLAYSURF.blit(tailUp, (segment[0] * SQUARE, segment[1] * SQUARE))
+
 
 def setNewHead(snake):
     """Moves the snake by adding a new head in the current direction."""
