@@ -16,6 +16,7 @@ This is a simple version of the classic Snake game. The player controls a snake 
 *   Background music
 *   Increasing difficulty as the snake gets longer
 *   Start screen with instructions
+*   Sprites for the snake's head, body, and tail
 
 ## Requirements
 
@@ -39,6 +40,7 @@ This is a simple version of the classic Snake game. The player controls a snake 
 ## How to Play
 
 *   Use the **Arrow Keys** (Up, Down, Left, Right) to control the direction of the snake.
+*   Press the **SPACE** bar to pause the game.
 *   The goal is to eat the red apples that appear on the screen.
 *   Each apple eaten increases your score and the length of the snake.
 *   The game is over if you run into the edge of the screen or into the snake's own body.
