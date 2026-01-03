@@ -1,3 +1,5 @@
+![Snake Game](assets/snake.png)
+
 # Snake Game
 
 A classic implementation of the Snake game using Python and the Pygame library.
