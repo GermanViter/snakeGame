@@ -163,6 +163,9 @@ def main():
                 if event.key == K_e and gamePaused:
                     gamePaused = False
                     gameStarted = False
+                    snake.clear()
+                    snake.extend([(x - 3, y), (x - 2, y), (x - 1, y), (x, y)])
+                    DIRECTION = "LEFT"
                     pygame.mixer.music.play()
 
             # Quit the game
