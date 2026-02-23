@@ -1,4 +1,4 @@
-![Snake Game](assets/snake.png)
+<img src="assets/snake.png" alt="Snake Game" style="border-radius: 20px;">
 
 # Snake Game
 
