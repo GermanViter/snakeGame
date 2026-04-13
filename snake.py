@@ -7,7 +7,7 @@ import math
 import pygame, sys
 from pygame.locals import *
 
-# Constants for the game window and board
+
 WINDOW = 640  # Size of the game window in pixels
 BOARD = 16    # Number of squares on the board (16x16)
 SQUARE = 40   # Size of each square in pixels
@@ -24,19 +24,19 @@ BLACK     = (0  , 0  , 0  , 255)
 SHADOW    = (0  , 0  , 0  , 120)
 WHITE     = (255, 255, 255, 255)
 
-# Initial direction of the snake
+
 DIRECTION = "LEFT"
 
 def main():
-    """Main function for the game."""
+
     global DISPLAYSURF, DIRECTION, highScore, overlay, headUp, headDown, headLeft, headRight, bodyBottomLeftCorner, bodyBottomRightCorner, bodyHorizontal, bodyVertical, bodyUpRightCorner, bodyUpLeftCorner, tailDown, tailUp, tailLeft, tailRight
     pygame.init()
 
-    # Font setup
+   
     startFont = pygame.font.Font('assets/PressStart2P-Regular.ttf', 30)
     nameFont = pygame.font.Font('assets/Pixel Game.otf', 200)
 
-    # Initialize the display surface
+   
     DISPLAYSURF = pygame.display.set_mode((WINDOW, WINDOW))
     pygame.display.set_caption('snake')
     overlay = pygame.Surface((WINDOW, WINDOW), pygame.SRCALPHA)
@@ -46,25 +46,21 @@ def main():
     x = 13
     y = 7
 
-    # Variables for the floating text effect on the start screen
+    # float text 
     floatTime = 0
     FLOAT_SPEED = 5
     FLOAT_AMPLITUDE = 10
 
     # Initial snake body
     snake = [(x - 3, y), (x - 2, y), (x - 1, y), (x, y)]
-    # Place the first fruit
     fruitPos = placeFruit(snake)
 
-    # Text for the start screen
     startText = startFont.render("PRESS ENTER TO START", True, BLACK)
     startText_rect = startText.get_rect(center=(WINDOW // 2, WINDOW // 2))
 
-    # Game title text
     nameText = nameFont.render("SNAKE", True, DARKBLUE)
     nameText_rect = nameText.get_rect(center=(WINDOW // 2, WINDOW // 4))
 
-    # Pause text
     pauseText = nameFont.render("PAUSED", True, WHITE)
     pauseText_rect = pauseText.get_rect(center=(WINDOW // 2, WINDOW // 4))
     exitText = startFont.render("[e]xit", True, WHITE)
@@ -72,11 +68,10 @@ def main():
     resumeText = startFont.render("[space]resume", True, WHITE)
     resumeText_rect = resumeText.get_rect(center=(WINDOW // 2, exitText_rect.center[1] + SQUARE * 2))
 
-    # Score variables
     score = 0
     highScore = loadData()
 
-    # Load sound effects and background music
+    
     eatSound = pygame.mixer.Sound('assets/little_robot_sound_factory_Collect_Point_01.mp3')
     eatSound.set_volume(0.3)
     deathSound = pygame.mixer.Sound('assets/mixkit-retro-arcade-game-over-470.wav')
@@ -85,22 +80,19 @@ def main():
     pygame.mixer.music.play(-1, 0.0)
     pygame.mixer.music.set_volume(0.3)
 
-    # Load and scale the apple image
     apple = pygame.image.load("assets/apple.png")
     apple = pygame.transform.scale(apple, (SQUARE, SQUARE))
 
-    # head images
     headLeft = pygame.image.load("assets/head_left.png")
     headUp = pygame.transform.rotate(headLeft, -90)
     headDown = pygame.transform.rotate(headLeft, 90)
     headRight = pygame.transform.flip(headLeft, True, False)
 
-    # tail images
     tailUp = pygame.image.load("assets/tail_up.png")
     tailDown = pygame.transform.rotate(tailUp, 180)
     tailLeft = pygame.transform.rotate(tailUp, 90)
     tailRight = pygame.transform.rotate(tailUp, -90)
-    # body images
+    
     bodyUpRightCorner = pygame.image.load("assets/body_bottomleft.png")
     bodyUpLeftCorner = pygame.transform.rotate(bodyUpRightCorner, 90)
     bodyBottomRightCorner = pygame.transform.rotate(bodyUpRightCorner, -90)    
@@ -108,9 +100,6 @@ def main():
     bodyVertical = pygame.image.load("assets/body_vertical.png")
     bodyHorizontal = pygame.transform.rotate(bodyVertical, 90)
 
-
-
-    # Game state variables
     gameStarted = False
     gamePaused = False
     died = False
@@ -119,7 +108,6 @@ def main():
     blinkTimer = 0
     canChangeDirection = True
 
-    # Main game loop
     while True:
         delta_time = fpsClock.tick() / 1000
         if died:
@@ -134,10 +122,8 @@ def main():
         highScoreText = startFont.render("HIGH SCORE : " + str(highScore), True, BLACK)
         highScoreText_rect = highScoreText.get_rect(center=(WINDOW // 2, scoreText_rect.center[1] + (SQUARE * 1)))
 
-        # Event handling loop
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                # Handle directional input
                 if event.key == K_UP and canChangeDirection:
                     if DIRECTION != "DOWN":
                         DIRECTION = "UP"
@@ -150,7 +136,7 @@ def main():
                 elif event.key == K_RIGHT and canChangeDirection:
                     if DIRECTION != "LEFT":
                         DIRECTION = "RIGHT"
-                # Start the game on ENTER press
+            
                 if event.key == K_RETURN:
                     canChangeDirection = True
                     gameStarted = True
@@ -168,11 +154,10 @@ def main():
                     DIRECTION = "LEFT"
                     pygame.mixer.music.play()
 
-            # Quit the game
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 quitSnake()
         
-        # Display the start screen if the game hasn't started
+
         if not gameStarted:
             canChangeDirection = False
             drawBoard()
@@ -184,7 +169,6 @@ def main():
             floatingRect = nameText_rect.copy()
             floatingRect.y += offsetY
             
-            # Create blinking effect for the "PRESS ENTER" text
             blinkTimer += delta_time
             if blinkTimer >= 0.07:
                 blinkState = not blinkState
@@ -212,12 +196,11 @@ def main():
             continue
 
         else:
-            # Game logic when the game is running
             pygame.mixer.music.unpause()
             canChangeDirection = True
             setNewHead(snake)
 
-            # Check for collision with the fruit
+         
             if hasColided(snake, fruitPos):
                 score += 1
                 if score > highScore:
@@ -225,19 +208,17 @@ def main():
                 fruitPos = placeFruit(snake)
                 eatSound.play()
             else:
-                # Remove the last segment of the snake if no fruit is eaten
                 snake.pop()
-            
-            # Check for collision with the snake's own body
-            for i in snake[1:]:
-                if i == snake[0]:
+        
+            for snakeCell in snake[1:]:
+                if snakeCell == snake[0]:
                     gameOver(snake, x, y, deathSound)
                     canChangeDirection = False
                     died = True
                     deadThisTurn = True
                     break
 
-            # Check for collision with the walls
+            # walls
             if (snake[0][0] < 0 or
                 snake[0][1] < 0 or
                 snake[0][0] >= BOARD or
@@ -249,7 +230,7 @@ def main():
                 deadThisTurn = True
                 continue
                 
-            # Handle the transition after death
+      
             if deadThisTurn:
                 deadThisTurn = False
                 gameStarted = False
@@ -259,12 +240,10 @@ def main():
                 pygame.display.update()
                 continue
 
-            # Draw the game elements
             drawBoard()
             drawFruit(fruitPos[0], fruitPos[1], apple)
             drawSnake(snake)
 
-        # Update the display
         pygame.display.update()
         fpsClock.tick(FPS)
 
@@ -282,6 +261,7 @@ def gameOver(snake, x, y, sound):
     pygame.mixer.music.stop()
     sound.play()
     playDeathAnimation()
+    
     # Reset the snake to its initial state
     snake.clear()
     snake.extend([(x - 3, y), (x - 2, y), (x - 1, y), (x, y)])
@@ -289,7 +269,6 @@ def gameOver(snake, x, y, sound):
     gameStarted = False
 
 def playDeathAnimation():
-    """Plays a death animation by turning the screen white, square by square."""
     remainingSquares = BOARD * BOARD 
     while remainingSquares != 0:
         x = random.randrange(0, BOARD)
@@ -303,7 +282,6 @@ def playDeathAnimation():
             remainingSquares -= 1
 
 def placeFruit(snake):
-    """Places a fruit on a random square that is not occupied by the snake."""
     fruitx = random.randrange(0, BOARD)
     fruity = random.randrange(0, BOARD)
 
@@ -314,11 +292,9 @@ def placeFruit(snake):
         return (fruitx, fruity)
 
 def drawFruit(fruitx, fruity, image):
-    """Draws the fruit on the board."""
     DISPLAYSURF.blit(image, (fruitx * SQUARE, fruity * SQUARE))
 
 def hasColided(snake, fruitPos):
-    """Checks if the snake's head has collided with the fruit."""
     if not snake:
         return False
     return snake[0] == fruitPos
@@ -337,9 +313,6 @@ def drawSnake(snake):
 
             sprite = getBodySprite(prev, segment, next)
             DISPLAYSURF.blit(sprite, (segment[0] * SQUARE, segment[1] * SQUARE))
-
-
-
 
 def getBodySprite(prev, segment, next):
     dx_prev = segment[0] - prev[0]
@@ -402,7 +375,6 @@ def setNewHead(snake):
     snake.insert(0, new_head)
 
 def drawBoard():
-    """Draws the checkered game board."""
     presentColor = DARK
     y = 0
 
@@ -410,10 +382,10 @@ def drawBoard():
         x = 0
         for j in range(BOARD):
             pygame.draw.rect(DISPLAYSURF, presentColor, (x, y, SQUARE, SQUARE))
-            # Alternate colors for the checkered pattern
+
             presentColor = LIGHT if presentColor == DARK else DARK
             x += SQUARE
-        # Alternate colors for the next row
+     
         presentColor = LIGHT if presentColor == DARK else DARK
         y += SQUARE    
 
@@ -440,5 +412,5 @@ def saveData(highScore):
         json.dump({"high_score": highScore}, f, indent=4)
 
 if __name__ == '__main__':
-    # Entry point of the program
+
     main()
