@@ -4,7 +4,7 @@
 
 A classic implementation of the Snake game using Python and the Pygame library.
 >[!WARNING]
->The following instruction are for linux users only. Is you use windows, that's your problem not mine.
+>The following instruction are for Linux and MacOS users only. Is you use Windows, that's your problem not mine.
 
 ## Description
 
