@@ -27,21 +27,16 @@ This is a simple version of the classic Snake game. The player controls a snake 
 
 ## Installation and Setup
 
-1.  **Make sure you have Python3.14 and pip installed.**
 
-2.  **Install the required library (Pygame):**
+1. Add permissions to the installation script and run it
     ```bash
-    python3 -m venv ~/venv
-    source ~/venv/bin/activate
-    pip install pygame-ce
+    chmod +x ./install_pygame.sh
+    ./install_pygame.sh
     ```
-
-3.  **Run the game:**
+2. Play the game
     ```bash
-    chmod +x ./snake.py
     ./snake.py
     ```
-
 ## How to Play
 
 *   Use the **Arrow Keys** (Up, Down, Left, Right) to control the direction of the snake.
