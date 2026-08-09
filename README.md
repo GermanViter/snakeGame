@@ -3,6 +3,8 @@
 # Snake Game
 
 A classic implementation of the Snake game using Python and the Pygame library.
+>[!WARNING]
+>The following instruction are for linux users only. Is you use windows, that's your problem not mine.
 
 ## Description
 
@@ -36,7 +38,8 @@ This is a simple version of the classic Snake game. The player controls a snake 
 
 3.  **Run the game:**
     ```bash
-    python3 ./snake.py
+    chmod +x ./snake.py
+    ./snake.py
     ```
 
 ## How to Play
