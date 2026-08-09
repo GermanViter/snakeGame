@@ -20,21 +20,23 @@ This is a simple version of the classic Snake game. The player controls a snake 
 
 ## Requirements
 
-*   Python 3
+*   Python3.14
 *   Pygame
 
 ## Installation and Setup
 
-1.  **Make sure you have Python 3 and pip installed.**
+1.  **Make sure you have Python3.14 and pip installed.**
 
 2.  **Install the required library (Pygame):**
     ```bash
-    pip install pygame
+    python3 -m venv ~/venv
+    source ~/venv/bin/activate
+    pip install pygame-ce
     ```
 
 3.  **Run the game:**
     ```bash
-    python3 snake.py
+    python3 ./snake.py
     ```
 
 ## How to Play
