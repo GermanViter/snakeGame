@@ -20,11 +20,10 @@ else
     fi
 fi
 
-HOME_DIR=""
 if [[ $(uname) == "Darwin" ]]; then
-    "$HOME_DIR"="/Users/$(whoami)"
+    HOME_DIR=/Users/$(whoami)
 elif [[ $(uname) == "Linux" ]]; then
-    "$HOME_DIR"="/home/$(whoami)"
+    HOME_DIR=/home/$(whoami)
 fi
 
 if [[ ! -f "$HOME_DIR"/venv ]]; then
