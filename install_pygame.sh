@@ -20,9 +20,16 @@ else
     fi
 fi
 
-if [[ ! -f /home/$(whoami)/venv ]]; then
+HOME_DIR=""
+if [[ $(uname) == "Darwin" ]]; then
+    "$HOME_DIR"="/Users/$(whoami)"
+elif [[ $(uname) == "Linux" ]]; then
+    "$HOME_DIR"="/home/$(whoami)"
+fi
+
+if [[ ! -f "$HOME_DIR"/venv ]]; then
     echo "Creating virtual environment at ~/venv..."
-    python3 -m venv ~/venv
+    python3 -m venv "$HOME_DIR"/venv
 fi
 
 echo "Activating virtual environment and installing Pygame..."
